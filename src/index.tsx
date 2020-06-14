@@ -14,7 +14,7 @@ ReactDOM.render(
       <Stuff />
       </div>
     <div style={{border:"solid"}}>
-      <TimePicker max={100}/>
+      <TimePicker currentValue={30} maxValue={80}/>
       </div>
   </div>,
   document.getElementById('root')
