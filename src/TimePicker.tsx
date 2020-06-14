@@ -61,7 +61,7 @@ export const TimePicker : React.SFC<Props> = (props) => {
 
       ctx.font = fontName;
       ctx.textAlign = 'center';
-      ctx.fillText(Math.floor(props.max * i / nMajorTicks).toString(), x, axisY + 20);
+      ctx.fillText(Math.floor(props.max * i / nMajorTicks).toString(), x, axisY + majorTickLen + 18);
     }
 
     ctx.globalAlpha = 0.2;
