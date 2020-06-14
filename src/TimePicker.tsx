@@ -17,20 +17,27 @@ export const TimePicker : React.SFC<Props> = (props) => {
   const onClick = (ev) => {
     console.log(`CLICK: ${ev.nativeEvent.offsetX} ${ev.nativeEvent.offsetY}`)
   }
-  React.useEffect(() => {
+
+  let timer;
+  const debounce = (fn: ()=>void) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      fn();
+    }, 50);
+  };
+
+  const redraw = () => {
     const canvas = ref.current; /* as HTMLCanvasElement;*/
     if (!canvas) return;
-    const canvasWidth = canvas.clientWidth;
-    const canvasHeight = canvas.clientHeight;
-    console.log(`WIDTH: ${canvasWidth}:${canvas.width} x ${canvasHeight}:${canvas.height}`);
-    if (canvas.width != canvasWidth) {
-      canvas.width=canvasWidth;
+    if (canvas.width != canvas.clientWidth) {
+      canvas.width=canvas.clientWidth;
     }
-    if (canvas.height != canvasHeight) {
-      canvas.width=canvasWidth;
+    if (canvas.height != canvas.clientHeight) {
+      canvas.width=canvas.clientWidth;
     }
+    // console.log(`WIDTH: ${canvas.clientWidth}:${canvas.width} x ${canvas.clientHeight}:${canvas.height}`);
     const ctx = canvas.getContext("2d");
-    console.log(`FONT: ${ctx.font}`);
 
     const nMinorTicksPerMajorTick = 5;
     const nMajorTicks = 10;
@@ -39,12 +46,12 @@ export const TimePicker : React.SFC<Props> = (props) => {
 
     const xPadding = 10;
     const fontName = '18px serif';
-    const axisLength = canvasWidth - xPadding*2;
+    const axisLength = canvas.clientWidth - xPadding*2;
     const axisY = 50;
     ctx.beginPath();
     ctx.lineWidth = 2;
     ctx.moveTo(xPadding, axisY);
-    ctx.lineTo(canvasWidth-xPadding, axisY);
+    ctx.lineTo(canvas.clientWidth-xPadding, axisY);
     ctx.stroke();
 
     const majorSpacing = axisLength / nMajorTicks;
@@ -67,7 +74,22 @@ export const TimePicker : React.SFC<Props> = (props) => {
     ctx.globalAlpha = 0.2;
     ctx.fillStyle = "blue";
     ctx.fillRect(xPadding,axisY-20,100,20);
-  }, [ref.current]);
+  }
+
+  const handleResize = () => {
+    const canvas = ref.current; /* as HTMLCanvasElement;*/
+    if (!canvas) return;
+    // console.log(`WIDTH: ${canvas.clientWidth}:${canvas.width} x ${canvas.clientHeight}:${canvas.height}`);
+    debounce(redraw);
+  }
+  React.useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    redraw();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    }
+  }, []);
 
                             return (<canvas onClick={onClick} ref={ref} width="400" height="100" style={{width:"100%", height:"10%"}}/>);
 };
