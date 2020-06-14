@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { Stuff } from './Stuff.tsx';
+import { TimePicker } from './TimePicker.tsx';
 
 ReactDOM.render(
   <div>
@@ -11,6 +12,9 @@ ReactDOM.render(
     Hello, world
     <div style={{border:"solid"}}>
       <Stuff />
+      </div>
+    <div style={{border:"solid"}}>
+      <TimePicker max={100}/>
       </div>
   </div>,
   document.getElementById('root')
